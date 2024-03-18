@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+	<meta charset="UTF-8">
+	<title>Event Creation Page</title>
+	<link rel="stylesheet" type="text/css" href="/css/styles.css">
+</head>
+
+<body>
+	<h2>Create Event</h2>
+	<form method="post" action="/event/create-schedule">
+		<table>
+			<tr>
+				<th><label for="title">Event name:</label></th>
+				<td><input type="text" id="title" name="title" placeholder="Event name" required></td>
+			</tr>
+			<tr>
+				<th><label for="description">Event description:</label></th>
+				<td><input type="text" id="description" name="description" placeholder="Event description"></td>
+			</tr>
+			<tr>
+				<th><label for="location">Event location:</label></th>
+				<td><input type="text" id="location" name="location" placeholder="Event location"></td>
+			</tr>
+			<tr>
+				<th><label for="startTime">Start time:</label></th>
+				<td><input type="datetime-local" id="startTime" name="startTime" placeholder="Start time" required></td>
+			</tr>
+			<tr>
+				<th><label for="durationMinutes">Duration (minutes):</label></th>
+				<td><input type="number" id="durationMinutes" name="durationMinutes" placeholder="Duration (minutes)"
+						required></td>
+			</tr>
+			<tr>
+				<th><label for="selectedContacts">Contacts to invite:</label></th>
+				<td>
+					<select id="selectedContacts" name="selectedContacts" multiple>
+						<span th:switch="${#lists.size(contacts)}">
+							<span th:case="0">
+								<option disabled>No contacts</option>
+							</span>
+							<span th:case="*">
+								<option th:each="contact : ${contacts}" th:value="${contact.username}"
+									th:text="${contact.displayName} + ' (' + ${contact.username} + ')'"></option>
+							</span>
+						</span>
+					</select>
+				</td>
+			</tr>
+			<tr>
+				<td></td>
+				<td><input type="submit" value="Next"></td>
+			</tr>
+		</table>
+	</form>
+	<p><a href="/home">Return to home</a></p>
+</body>
+
+</html>

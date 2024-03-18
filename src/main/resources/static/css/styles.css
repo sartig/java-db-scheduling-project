@@ -1,0 +1,24 @@
+body {
+    font-family: Arial, sans-serif;
+    margin: 20px;
+  }
+  
+  h2 {
+    margin-bottom: 10px;
+  }
+  p {
+    margin-bottom: 5px;
+  }
+  a {
+    text-decoration: none;
+    color: #0000FF;
+  }
+  th {
+    text-align: right;
+    vertical-align: top;
+  }
+
+  .message {
+    font-style: italic;
+    color:red;
+  }

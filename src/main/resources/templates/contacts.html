@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+	<meta charset="UTF-8">
+	<title>My Contacts</title>
+	<link rel="stylesheet" type="text/css" href="/css/styles.css">
+</head>
+
+<body>
+	<h2>My Contacts</h2>
+	<p>
+		Your contacts:
+	<div th:switch="${#lists.size(contacts)}">
+		<span th:case="0">
+			<ul>
+				<li>None</li>
+			</ul>
+		</span>
+		<span th:case="*">
+			<span th:each="contact : ${contacts}">
+				<p>
+					<span th:text="${contact.displayName}"></span> (<span th:text="${contact.username}"></span>) <a
+						th:href="@{/contacts/remove(username=${contact.username})}">Remove</a>
+				</p>
+			</span>
+		</span>
+	</div>
+	</p>
+	<p>
+		Received contact invites:
+		<div th:switch="${#lists.size(receivedInvites)}">
+			<span th:case="0">
+				<ul>
+					<li>None</li>
+				</ul>
+			</span>
+			<span th:case="*">
+				<span th:each="contact : ${receivedInvites}">
+					<p>
+						<span th:text="${contact.displayName}"></span> (<span th:text="${contact.username}"></span>) <a
+							th:href="@{/contacts/accept(username=${contact.username})}">Accept</a>
+					</p>
+				</span>
+			</span>
+		</div>
+	</p>
+	<p>
+		Sent contact invites:
+		<div th:switch="${#lists.size(sentInvites)}">
+			<span th:case="0">
+				<ul>
+					<li>None</li>
+				</ul>
+			</span>
+			<span th:case="*">
+				<span th:each="contact : ${sentInvites}">
+					<p>
+						<span th:text="${contact.displayName}"></span> (<span th:text="${contact.username}"></span>) <a
+							th:href="@{/contacts/cancel(username=${contact.username})}">Cancel</a>
+					</p>
+				</span>
+			</span>
+		</div>
+	</p>
+	<p>
+		Make a contact request
+	<form method="post" action="contacts/invite">
+		<table>
+			<tr>
+				<th><label for="contactUsername">Contact username:</label></th>
+				<td><input type="text" name="username" id="contactUsername" placeholder="Contact username" required>
+				</td>
+			</tr>
+			<tr>
+				<td></td>
+				<td><input type="submit" value="Send request"></td>
+			</tr>
+		</table>
+	</form>
+	</p>
+	<!-- Messages here -->
+	<div class="message" th:if="${message}">
+		<span th:text="${message}"></span>
+	</div>
+	<p><a href="/home">Return to home</a></p>
+</body>
+
+</html>

@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+	<meta charset="UTF-8">
+	<title>My Calendar</title>
+	<link rel="stylesheet" type="text/css" href="/css/styles.css">
+</head>
+
+<body>
+	<h2>My Calendar</h2>
+	<p>
+		Confirmed events:
+	<div th:switch="${#lists.size(calendar)}">
+		<span th:case="0">
+			<ul>
+				<li>None</li>
+			</ul>
+		</span>
+		<span th:case="*">
+			<ul th:each="event : ${calendar}">
+				<li>
+					<span th:text="${event.startTime} + ' - ' + ${event.endTime} + ': ' + ${event.title}"></span> <a
+						th:href="@{'/event/' + ${event.id}}">Details</a>
+				</li>
+			</ul>
+		</span>
+	</div>
+	</p>
+	<p>
+		Received event invites:
+	<div th:switch="${#lists.size(calendarInvites)}">
+		<span th:case="0">
+			<ul>
+				<li>None</li>
+			</ul>
+		</span>
+		<span th:case="*">
+			<ul th:each="event : ${calendarInvites}">
+				<li>
+					<span th:text="${event.startTime} + ' - ' + ${event.endTime} + ': ' + ${event.title}"></span> <a
+						th:href="@{'/event/' + ${event.id}}">Details</a> | <a th:href="@{'/event/accept/'+ ${event.id}}">Accept</a> | <a th:href="@{'/event/decline/'+ ${event.id}}">Decline</a>
+				</li>
+			</ul>
+		</span>
+	</div>
+	</p>
+	<!-- Messages here -->
+	<div class="message" th:if="${message}">
+		<span th:text="${message}"></span>
+	</div>
+	<p><a href="/home">Return to home</a></p>
+</body>
+
+</html>

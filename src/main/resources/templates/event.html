@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+	<meta charset="UTF-8">
+	<title>Event Details Page</title>
+	<link rel="stylesheet" type="text/css" href="/css/styles.css">
+</head>
+
+<body>
+	<!-- Event details e.g. description, location, time -->
+	<h2>Event title: <span th:text="${event.title}"></span></h2>
+	<p>Event description: <span th:text="${event.description}"></span></p>
+	<p>Event location: <span th:text="${event.location}"></span></p>
+	<p>Event organiser: <span
+			th:text="${event.organiser.displayName} + ' (' + ${event.organiser.username} + ')'"></span></p>
+	<p>Event start time: <span th:text="${event.startTime}"></span></p>
+	<p>Event end time: <span th:text="${event.endTime}"></span></p>
+	<p>Event duration (minutes): <span th:text="${event.durationMinutes}"></span></p>
+
+	<!-- Attendees list -->
+	<p>
+		Confirmed attendees:
+	<div th:switch="${#lists.size(event.attendees)}">
+		<span th:case="0">None</span>
+		<span th:case="*">
+			<ul th:each="contact : ${event.attendees}">
+				<li>
+					<span th:text="${contact.displayName} + ' (' + ${contact.username} + ')'"></span>
+				</li>
+			</ul>
+		</span>
+	</div>
+	</p>
+
+	<!-- Invited (yet to respond) list -->
+	<p>
+		Invited attendees:
+	<div th:switch="${#lists.size(event.invitees)}">
+		<span th:case="0">None</span>
+		<span th:case="*">
+			<ul th:each="contact : ${event.invitees}">
+				<li>
+					<span th:text="${contact.displayName} + ' (' + ${contact.username} + ')'"></span>
+				</li>
+			</ul>
+		</span>
+	</div>
+	</p>
+
+	<!-- TODO: event controls for organiser, e.g. modifying details, modifying time -->
+	<p><a href="/calendar">Return to my calendar</a></p>
+	<p><a href="/home">Return to home</a></p>
+</body>
+
+</html>

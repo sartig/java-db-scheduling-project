@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+	<meta charset="UTF-8">
+	<title>My Profile</title>
+	<link rel="stylesheet" type="text/css" href="/css/styles.css">
+</head>
+
+<body>
+	<div class="message" th:if="${message}">
+		<span th:text="${message}"></span>
+	</div>
+	<h2>Profile Information</h2>
+	<p>
+		<strong>Id:</strong> <span th:text="${user.id}"></span>
+	</p>
+	<p>
+		<strong>Username:</strong> <span th:text="${user.username}"></span>
+	</p>
+	<p>
+		<strong>Display Name:</strong> <span th:text="${user.displayName}"></span>
+	</p>
+	<h2>Update display name</h2>
+	<form method="post" action="profile/update-display-name">
+		<table>
+			<tr>
+				<th><label for="newDisplayName">New display name:</label></th>
+				<td><input type="text" name="displayName" id="newDisplayName" placeholder="New display name" required>
+				</td>
+			</tr>
+			<tr>
+				<td></td>
+				<td><input type="submit" value="Update"></td>
+			</tr>
+		</table>
+	</form>
+	<h2>Update password</h2>
+	<form method="post" action="profile/update-password">
+		<table>
+			<tr>
+				<th><label for="currentPassword">Current password:</label></th>
+				<td><input type="password" name="currentPassword" id="currentPassword" placeholder="Current password"
+						required></td>
+			</tr>
+			<tr>
+				<th><label for="newPassword">New password:</label></th>
+				<td><input type="password" name="newPassword" id="newPassword" placeholder="New password" required></td>
+			</tr>
+			<tr>
+				<th><label for="newPasswordConfirmation">Retype new password:</label></th>
+				<td><input type="password" name="newPasswordConfirmation" id="newPasswordConfirmation" placeholder="Retype new password" required></td>
+			</tr>
+			<tr>
+				<td></td>
+				<td><input type="submit" value="Update"></td>
+			</tr>
+		</table>
+	</form>
+
+	<p><a href="/home">Return to home</a></p>
+</body>
+
+</html>

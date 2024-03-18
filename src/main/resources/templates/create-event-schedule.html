@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+	<meta charset="UTF-8">
+	<title>Event Creation Page</title>
+	<link rel="stylesheet" type="text/css" href="/css/styles.css">
+</head>
+
+<body>
+	<h2>Create Event</h2>
+	<form method="post" action="/event/create-final">
+		<!-- hidden to user but will be submitted in POST request -->
+		<select name="selectedContacts" multiple hidden>
+			<span th:switch="${#lists.size(invited)}">
+				<span th:case="0">
+					<option>No contacts invited</option>
+				</span>
+				<span th:case="*">
+					<option th:each="contact : ${invited}" th:value="${contact.username}"
+						th:text="${contact.displayName} + ' (' + ${contact.username} + ')'" selected></option>
+				</span>
+			</span>
+		</select>
+		<input type="number" name="durationMinutes" th:value="${event.durationMinutes}" hidden>
+		<!-- end of hidden elements -->
+		<table>
+			<tr>
+				<th><label for="title">Event name:</label></th>
+				<td><input type="text" id="title" name="title" th:value="${event.title}" placeholder="Event title"
+						required></td>
+			</tr>
+			<tr>
+				<th><label for="description"></label>Event description:</th>
+				<td><input type="text" id="description" name="description" th:value="${event.description}"
+						placeholder="Event description"></td>
+			</tr>
+			<tr>
+				<th><label for="location"></label>Event location:</th>
+				<td><input type="text" id="location" name="location" th:value="${event.location}"
+						placeholder="Event location"></td>
+			</tr>
+			<tr>
+				<th><label for="startTime-display"></label>Requested start time:</th>
+				<!-- disabled to prevent user from modifying -->
+				<td><input type="datetime-local" id="startTime-display" th:value="${event.startTime}" readonly disabled>
+				</td>
+			</tr>
+			<tr>
+				<th><label for="duration-display"></label>Duration (minutes):</th>
+				<!-- disabled to prevent user from modifying -->
+				<td><input type="number" id="duration-display" th:value="${event.durationMinutes}" readonly disabled>
+				</td>
+			</tr>
+			<tr>
+				<th><label for="selectedContacts-display">Contacts to invite:</label></th>
+				<td>
+					<select id="selectedContacts-display" multiple disabled>
+						<span th:switch="${#lists.size(invited)}">
+							<span th:case="0">
+								<option>No contacts invited</option>
+							</span>
+							<span th:case="*">
+								<option th:each="contact : ${invited}" th:value="${contact.username}"
+									th:text="${contact.displayName} + ' (' + ${contact.username} + ')'" selected>
+								</option>
+							</span>
+						</span>
+					</select>
+				</td>
+			</tr>
+			<tr>
+				<th><label for="startTime">Available times:</label></th>
+				<td>
+					<select id="startTime" name="startTime" required>
+						<option th:each="time : ${suggestedTimeslots}" th:value="${time.start}" th:text="${time}">
+						</option>
+					</select>
+				</td>
+			</tr>
+			<tr>
+				<td></td>
+				<td><input type="submit" value="Confirm"></td>
+			</tr>
+		</table>
+
+	</form>
+	<p><a href="javascript:history.back()">Back</a></p>
+</body>
+
+</html>
