@@ -1,6 +1,7 @@
 package com.fdmgroup.schedulingproject.controller;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.argThat;
 import static org.mockito.ArgumentMatchers.eq;
@@ -27,6 +28,7 @@ import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import org.springframework.web.servlet.FlashMap;
+import org.springframework.web.servlet.ModelAndView;
 
 import com.fdmgroup.schedulingproject.exception.EventAlreadyInCalendarException;
 import com.fdmgroup.schedulingproject.exception.EventClashException;
@@ -91,7 +93,9 @@ public class EventControllerTest {
 		when(mockUserContactService.getContacts("valid")).thenReturn(mockContactsList);
 		MvcResult result = mvc.perform(MockMvcRequestBuilders.get("/event/create").sessionAttr("current_user", "valid"))
 				.andExpect(MockMvcResultMatchers.view().name("create-event")).andReturn();
-		Map<?, ?> model = result.getModelAndView().getModel();
+		ModelAndView modelAndView = result.getModelAndView();
+		assertNotNull(modelAndView);
+		Map<?, ?> model = modelAndView.getModel();
 		assertEquals(mockContactsList, model.get("contacts"));
 	}
 
@@ -143,7 +147,9 @@ public class EventControllerTest {
 				.param("durationMinutes", "30").sessionAttr("current_user", "username"))
 				.andExpect(MockMvcResultMatchers.view().name("create-event-schedule")).andReturn();
 
-		Map<?, ?> model = result.getModelAndView().getModel();
+		ModelAndView modelAndView = result.getModelAndView();
+		assertNotNull(modelAndView);
+		Map<?, ?> model = modelAndView.getModel();
 		List<User> invitedUsers = (List<User>) model.get("invited");
 		Event createdEvent = (Event) model.get("event");
 		assertEquals(mockUser2, invitedUsers.get(0));
@@ -206,7 +212,7 @@ public class EventControllerTest {
 						&& e.getLocation().equals("location") && e.getStartTime().equals(now)
 						&& e.getDurationMinutes() == 30));
 	}
-	
+
 	@Test
 	@DisplayName("Test GET request to \"/event/accept/{event-id} redirects to index.html for non-logged in user")
 	void testGetAcceptEvent_RedirectsToIndex_IfNotLoggedIn() throws Exception {
@@ -222,7 +228,7 @@ public class EventControllerTest {
 	@Test
 	@DisplayName("Test GET request to \"/event/accept/{event-id}\" redirects to index.html for invalid username")
 	void testGetAcceptEvent_RedirectsToIndex_IfSessionNotValid() throws Exception {
-		doThrow(new UserNotFoundException()).when(mockEventService).acceptEventInvite("invalid","4321");
+		doThrow(new UserNotFoundException()).when(mockEventService).acceptEventInvite("invalid", "4321");
 
 		MvcResult result = mvc
 				.perform(MockMvcRequestBuilders.get("/event/accept/4321").sessionAttr("current_user", "invalid"))
@@ -236,7 +242,7 @@ public class EventControllerTest {
 	@Test
 	@DisplayName("Test GET request to \"/event/accept/{event-id}\" redirects to calendar.html for invalid event")
 	void testGetAcceptEvent_RedirectsToCalendar_IfEventNotValid() throws Exception {
-		doThrow(new EventNotFoundException()).when(mockEventService).acceptEventInvite("username","4321");
+		doThrow(new EventNotFoundException()).when(mockEventService).acceptEventInvite("username", "4321");
 
 		MvcResult result = mvc
 				.perform(MockMvcRequestBuilders.get("/event/accept/4321").sessionAttr("current_user", "username"))
@@ -250,7 +256,7 @@ public class EventControllerTest {
 	@Test
 	@DisplayName("Test GET request to \"/event/accept/{event-id}\" redirects to calendar.html if user not invited")
 	void testGetAcceptEvent_RedirectsToCalendar_IfUserNotInvited() throws Exception {
-		doThrow(new UserNotInvitedException()).when(mockEventService).acceptEventInvite("username","4321");
+		doThrow(new UserNotInvitedException()).when(mockEventService).acceptEventInvite("username", "4321");
 
 		MvcResult result = mvc
 				.perform(MockMvcRequestBuilders.get("/event/accept/4321").sessionAttr("current_user", "username"))
@@ -264,7 +270,7 @@ public class EventControllerTest {
 	@Test
 	@DisplayName("Test GET request to \"/event/accept/{event-id}\" redirects to calendar.html if event already in user calendar")
 	void testGetAcceptEvent_RedirectsToCalendar_IfEventInUserCalendar() throws Exception {
-		doThrow(new EventAlreadyInCalendarException()).when(mockEventService).acceptEventInvite("username","4321");
+		doThrow(new EventAlreadyInCalendarException()).when(mockEventService).acceptEventInvite("username", "4321");
 
 		MvcResult result = mvc
 				.perform(MockMvcRequestBuilders.get("/event/accept/4321").sessionAttr("current_user", "username"))
@@ -278,7 +284,7 @@ public class EventControllerTest {
 	@Test
 	@DisplayName("Test GET request to \"/event/accept/{event-id}\" redirects to calendar.html if event clashes with user calendar")
 	void testGetAcceptEvent_RedirectsToCalendar_IfEventClashesWithUserCalendar() throws Exception {
-		doThrow(new EventClashException()).when(mockEventService).acceptEventInvite("username","4321");
+		doThrow(new EventClashException()).when(mockEventService).acceptEventInvite("username", "4321");
 
 		MvcResult result = mvc
 				.perform(MockMvcRequestBuilders.get("/event/accept/4321").sessionAttr("current_user", "username"))
@@ -288,7 +294,7 @@ public class EventControllerTest {
 		FlashMap flashMap = result.getFlashMap();
 		assertEquals("Event clashes with other events in calendar", flashMap.get("message"));
 	}
-	
+
 	@Test
 	@DisplayName("Test GET request to \"/event/decline/{event-id} redirects to index.html for non-logged in user")
 	void testGetDeclineEvent_RedirectsToIndex_IfNotLoggedIn() throws Exception {
@@ -304,7 +310,7 @@ public class EventControllerTest {
 	@Test
 	@DisplayName("Test GET request to \"/event/decline/{event-id}\" redirects to index.html for invalid username")
 	void testGetDeclineEvent_RedirectsToIndex_IfSessionNotValid() throws Exception {
-		doThrow(new UserNotFoundException()).when(mockEventService).declineEventInvite("invalid","4321");
+		doThrow(new UserNotFoundException()).when(mockEventService).declineEventInvite("invalid", "4321");
 
 		MvcResult result = mvc
 				.perform(MockMvcRequestBuilders.get("/event/decline/4321").sessionAttr("current_user", "invalid"))
@@ -318,7 +324,7 @@ public class EventControllerTest {
 	@Test
 	@DisplayName("Test GET request to \"/event/decline/{event-id}\" redirects to calendar.html for invalid event")
 	void testGetDeclineEvent_RedirectsToCalendar_IfEventNotValid() throws Exception {
-		doThrow(new EventNotFoundException()).when(mockEventService).declineEventInvite("username","4321");
+		doThrow(new EventNotFoundException()).when(mockEventService).declineEventInvite("username", "4321");
 
 		MvcResult result = mvc
 				.perform(MockMvcRequestBuilders.get("/event/decline/4321").sessionAttr("current_user", "username"))
@@ -332,7 +338,7 @@ public class EventControllerTest {
 	@Test
 	@DisplayName("Test GET request to \"/event/decline/{event-id}\" redirects to calendar.html if user not invited")
 	void testGetDeclineEvent_RedirectsToCalendar_IfUserNotInvited() throws Exception {
-		doThrow(new UserNotInvitedException()).when(mockEventService).declineEventInvite("username","4321");
+		doThrow(new UserNotInvitedException()).when(mockEventService).declineEventInvite("username", "4321");
 
 		MvcResult result = mvc
 				.perform(MockMvcRequestBuilders.get("/event/decline/4321").sessionAttr("current_user", "username"))
@@ -346,7 +352,7 @@ public class EventControllerTest {
 	@Test
 	@DisplayName("Test GET request to \"/event/decline/{event-id}\" redirects to calendar.html if event already in user calendar")
 	void testGetDeclineEvent_RedirectsToCalendar_IfEventInUserCalendar() throws Exception {
-		doThrow(new EventAlreadyInCalendarException()).when(mockEventService).declineEventInvite("username","4321");
+		doThrow(new EventAlreadyInCalendarException()).when(mockEventService).declineEventInvite("username", "4321");
 
 		MvcResult result = mvc
 				.perform(MockMvcRequestBuilders.get("/event/decline/4321").sessionAttr("current_user", "username"))

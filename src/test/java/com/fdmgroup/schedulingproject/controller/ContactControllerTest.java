@@ -1,6 +1,7 @@
 package com.fdmgroup.schedulingproject.controller;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -22,6 +23,7 @@ import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import org.springframework.web.servlet.FlashMap;
+import org.springframework.web.servlet.ModelAndView;
 
 import com.fdmgroup.schedulingproject.exception.CannotInviteSelfException;
 import com.fdmgroup.schedulingproject.exception.UserAlreadyInContactsException;
@@ -81,7 +83,9 @@ public class ContactControllerTest {
 		MvcResult result = mvc.perform(MockMvcRequestBuilders.get("/contacts").sessionAttr("current_user", "valid"))
 				.andExpect(MockMvcResultMatchers.view().name("contacts")).andReturn();
 
-		Map<?, ?> model = result.getModelAndView().getModel();
+		ModelAndView modelAndView = result.getModelAndView();
+		assertNotNull(modelAndView);
+		Map<?, ?> model = modelAndView.getModel();
 		assertEquals(mockContacts, model.get("contacts"));
 		assertEquals(mockReceivedContactInvites, model.get("receivedInvites"));
 		assertEquals(mockSentContactInvites, model.get("sentInvites"));

@@ -1,6 +1,7 @@
 package com.fdmgroup.schedulingproject.controller;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.verify;
@@ -25,6 +26,7 @@ import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import org.springframework.web.servlet.FlashMap;
+import org.springframework.web.servlet.ModelAndView;
 
 import com.fdmgroup.schedulingproject.exception.PasswordDoesNotMatchException;
 import com.fdmgroup.schedulingproject.exception.UserNotFoundException;
@@ -99,6 +101,7 @@ public class UserControllerTest {
 				.andReturn();
 
 		HttpSession session = result.getRequest().getSession();
+		assertNotNull(session);
 		assertEquals("valid", session.getAttribute("current_user"));
 	}
 
@@ -133,7 +136,9 @@ public class UserControllerTest {
 		MvcResult result = mvc.perform(MockMvcRequestBuilders.get("/home").sessionAttr("current_user", "valid"))
 				.andExpect(MockMvcResultMatchers.view().name("home")).andReturn();
 
-		Map<?, ?> model = result.getModelAndView().getModel();
+		ModelAndView modelAndView = result.getModelAndView();
+		assertNotNull(modelAndView);
+		Map<?, ?> model = modelAndView.getModel();
 		assertEquals("display", model.get("user"));
 		assertEquals(0, model.get("pending"));
 		assertEquals(0, model.get("eventInvites"));
@@ -148,6 +153,7 @@ public class UserControllerTest {
 				.andReturn();
 
 		HttpSession session = result.getRequest().getSession();
+		assertNotNull(session);
 		assertNull(session.getAttribute("current_user"));
 	}
 
@@ -179,7 +185,9 @@ public class UserControllerTest {
 		MvcResult result = mvc.perform(MockMvcRequestBuilders.get("/profile").sessionAttr("current_user", "username"))
 				.andExpect(MockMvcResultMatchers.view().name("profile")).andReturn();
 
-		assertEquals(realUser, result.getModelAndView().getModel().get("user"));
+		ModelAndView modelAndView = result.getModelAndView();
+		assertNotNull(modelAndView);
+		assertEquals(realUser, modelAndView.getModel().get("user"));
 	}
 
 	@Test
@@ -339,7 +347,9 @@ public class UserControllerTest {
 		MvcResult result = mvc.perform(MockMvcRequestBuilders.get("/calendar").sessionAttr("current_user", "username"))
 				.andExpect(MockMvcResultMatchers.view().name("calendar")).andReturn();
 
-		assertEquals(mockCalendar, result.getModelAndView().getModel().get("calendar"));
-		assertEquals(mockInvites, result.getModelAndView().getModel().get("calendarInvites"));
+		ModelAndView modelAndView = result.getModelAndView();
+		assertNotNull(modelAndView);
+		assertEquals(mockCalendar, modelAndView.getModel().get("calendar"));
+		assertEquals(mockInvites, modelAndView.getModel().get("calendarInvites"));
 	}
 }
